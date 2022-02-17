@@ -1,0 +1,1264 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Electron and proton heating in transrelativistic guide field reconnection</title>
+
+		<meta name="description" content="Presentation slides">
+		<!-- <meta name="author" content="Hakim El Hattab">-->
+		<meta name="author" content="Michael E. Rowan">
+
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/my_theme.css" id="theme">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>a
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides" style="margin-top:50px">
+				<section>
+				  <h3>Magnetic dissipation in collisionless accretion flows</h3>
+				  <p style="text-align: center">
+				    <small>Michael Rowan</small>
+				  </p>
+				  <p style="text-align: center">
+				    <small>Adviser: Ramesh Narayan; Co-adviser: Lorenzo Sironi </small>
+				  </p>
+				  <p style="text-align: center">
+				    <small> 8-26-2019 </small>
+				  </p>
+				  <div class="ctr w100">
+				    <img src="title_pic.png" style="border: 4px solid #6ca0e8; border-radius:10px;">
+				  </div>
+				</section>
+
+				<section>
+				  <h2>Outline</h2>
+				  <ul style="position: absolute; width: 45%; 
+					     height: 25%; top: 0; bottom: 0; 
+					     right: 0; left: 0; 
+					     margin: auto;">
+				    <li> <span class="fragment highlight-green">Introduction</span> </li>
+				    <li> Magnetic reconnection </li>
+				    <li> Kelvin-Helmholtz instability </li>
+				  </ul>
+				</section>
+								
+				<section>
+				  <h2>Black hole distance scales $\gg$ plasma scales</h2>
+				  <p>
+				    Sgr A$^{*}$ (black hole at the center of our
+				    galaxy) has Schwarzschild radius $R_{\rm G} \sim 10^{12}\,{\rm cm}$
+				  </p>
+				  <p>
+				    For the corona of Sgr A$^{*}$, plasma scale is:
+				    $c/\omega_{\rm pe} \sim 1\,{\rm cm}$
+				  </p>
+				  <p>
+				    This is a challenge for numerical (MHD) simulations of black hole environments,
+				    which resolve only the macroscopic scales
+				  </p>
+				  <p>
+				    Plasma physics controls energy dissipation at small scales:
+				  </p>
+				    <ul style="display:table; margin:0 auto; text-align:left; width:10%">
+				      <li> <span class="fragment highlight-green">Reconnection</span> </li>
+				      <li> Shocks </li>
+				      <li> <span class="fragment highlight-green">Turbulence</span> </li>
+				    </ul>
+				  <p>
+				    Can turbulence or other instabilities induce reconnection?
+				  </p>
+				</section>
+
+				<section>
+				<section>
+				  <h2>Structure of black hole accretion flows</h2>
+				  <div style="float: left" class="w50">
+				  <p> Reconnection is well-studied in <em> non-relativistic </em> </p>
+				  <ul>
+				    <li> Solar corona </li>
+				    <li> Earth's magnetosphere </li>
+				  </ul>
+				  <p> and <em>relativistic </em> systems</p>
+				  <ul>
+				    <li> Jets (AGN, GRB) </li>
+				  </ul>
+				  <p> BH coronae expected to be inbetween these two limits: </p>
+				  <p>$\Rightarrow$ '<span style="color:lime">transrelativistic</span>'</p>
+				  </div>
+				  <div class="w50" style="float: right">
+				    <img src="corona.png" style="border: 4px solid #6ca0e8; border-radius:10px; margin: 0;">
+				    <p class="rcred"><a href="http://dx.doi.org/10.1146/annurev-astro-082812-141003"  style="font-size:75%;line-height:0.8em;margin:0;">Sadowski (2013); A. Tchekhovskoy; Yuan+Narayan (2014)</a></p>
+				  </div>
+				</section>
+				<section>
+				  <h2>Structure of black hole accretion flows</h2>
+				    <img class="ctr w90" src="corona2.png" style="border: 4px solid #6ca0e8; border-radius:10px;">
+				 </section>
+				</section>
+
+
+				<section>
+				  <h2>Outline</h2>
+				  <ul style="position: absolute; width: 45%; 
+					     height: 25%; top: 0; bottom: 0; 
+					     right: 0; left: 0; 
+					     margin: auto;">
+				    <li> Introduction </li>
+				    <li> <span style="color: lime">Magnetic reconnection </span></li>
+				    <li> Kelvin-Helmholtz instability </li>
+				  </ul>
+				</section>
+
+								
+				<section>
+				  <h2>'Cartoon' picture of reconnection</h2>
+				  <p>
+				    Magnetic energy $\Rightarrow$ kinetic (heating, acceleration, bulk motion)
+				  </p>
+				  <video data-autoplay style="border: 4px solid #6ca0e8; border-radius:10px;" src="rec2.webm" loop controls class="w40"></video>
+				  <p class="lcred", style="text-align:center"> <a href="">Center for Visual computing, University of California Riverside</a> </p>
+				  <p style="text-align:center">
+				    Magnetic tension drags away field lines at the <em> Alfvén speed</em>: 
+				  </p>
+				  <p style="border: 4px solid #6ca0e8; text-align:center; display:inline-block; border-radius:10px; padding: 10px 10px 10px 10px;">
+					\[\begin{aligned}
+					\frac{v_{\rm A}}{c} &amp; = \sqrt{\frac{\sigma_{w}}{1+\sigma_{w}}}, {\rm where } \, \sigma_{w} \propto \frac{{\rm magnetic\,pressure}}{{\rm enthalpy\,density}}
+					\end{aligned} \]
+				  </p>
+				</section>
+				
+				<section>
+				  <h2>Reconnection occurs in all sorts of plasmas</h2>
+				  <p style="text-align: center">
+				    Occurs in magnetized plasmas, like the solar corona:
+				  </p>
+				  <div class="ctr w40">
+				  <video data-autoplay width="100%" src="rollingwave_best.webm" loop controls style="border: 4px solid #6ca0e8; border-radius:10px;"></video>
+				  <p class="rcred"> <a href="https://sdo.gsfc.nasa.gov/gallery/main/item/193"> NASA SDO </a> </p>
+				  </div>
+				  <p style="text-align: center">  
+				    What would reconnection look like in <em>black hole coronae</em>? 
+				  </p>
+				</section>
+				
+				<section>
+				  <h2>Key questions in reconnection physics</h2>
+				  <p> How much magnetic energy is dissipated to electrons, ions?</p>
+				  <div class="ctr w70">
+				    <img src="Bflow_black3.png" style="border: 0px"> <!-- want to use either bflow final or bflow3 bflowfinal.png-->
+				  </div>
+				</section>
+
+				<section data-background="PIC_pic.png">
+				  <div class='wrapper' style='margin-top:100px'>
+				    <div  class='firstDiv' style="color:black; background-color: black; opacity:0.75;" id="overlay">
+				      <p> </p>
+				    <h1 style="color:black;display:inline-block;text-align:center;"> PiC: Particle in Cell </h1>
+				    <p> </p>
+				  <ul>
+				    <li> Lorentz force law </li>
+				    <li> Maxwell equations (Ampère's law, Faraday's law)</li>
+				    <li> Divergence Eqs. satisfied at initialization </li>
+				    <ul>$\Rightarrow$ satisfied throughout time evolution</ul>
+				  </ul>
+				  <code style="color:lime"> TRISTAN-MP </code>
+				  <p style="text-align:center"> 2D in space, but track all 3 components of momentum</p>
+				  </div>
+				    <div class='secondDiv'>
+				      <p> </p>
+				    <h1 style="color:white; display:inline-block;text-align:center;"> PiC: Particle in Cell </h1>
+				    <p>  </p>
+				  <ul>
+				    <li> Lorentz force law </li>
+				    <li> Maxwell equations (Ampère's law, Faraday's law)</li>
+				    <li> Divergence Eqs. satisfied at initialization</li>
+				    <ul> $\Rightarrow$ satisfied throughout time evolution</ul>
+				  </ul>
+				  <code style="color:lime"> TRISTAN-MP </code>
+				  <p style="text-align:center"> 2D in space, but track all 3 components of momentum</p>
+				  </div>
+				</section>
+				
+				<section> <!-- \frac{T_{\rm e}}{T_{\rm i}} &amp; = \frac{\rm electron\,temperature}{\rm ion\,temperature} -->
+					<h2>Describe plasma with a few parameters</h2>
+				  <p> "Plasma-beta," "magnetization," and "guide field strength" describe the initial state of the upstream plasma: </p>
+				    <p style="border: 4px solid #6ca0e8; text-align:center; display:inline-block;border-radius:10px;padding: 10px 10px 10px 10px;">
+					\[\begin{aligned}
+					\beta_{\rm i} = \frac{n_{\rm i} k_{\rm B} T_{\rm i}}{B_{0}^{2}/8 \pi} &amp; = \frac{\rm \color{#f6656c}{thermal\,pressure}}{\rm \color{#6ca0e8}{magnetic\,pressure}} \\
+					\sigma_{w} = \frac{B_{0}^{2}/4 \pi}{w} &amp; = \frac{\rm \color{#6ca0e8}{magnetic\,pressure\,(\times 2)}}{\rm \color{#5AE769}{enthalpy\,density}} \\
+					b_{g} = B_{z}/B_{0} &amp; = \frac{\text{Strength of out-of-plane } B}{\text{Strength of in-plane } B} 
+					\end{aligned} \]
+				    </p>
+				    <!-- <p> -->
+				    <!--   Other parameters: mass ratio, $m_{\rm i}/m_{\rm e}$, and temperature ratio, $T_{\rm e}/T_{\rm i}$  -->
+				    <!-- </p> -->
+				  <p>
+				    Tune these in the <em>upstream</em>, measure heating in the <em>downstream</em>
+				  </p>
+				  <!-- <p style="text-align:center"> $\Rightarrow$ <em>simulation scaling study</em></p> -->
+				</section>
+				
+				<section>
+						  <h2>How to describe heating efficiency?</h2>
+						  <p> How much are particles heated? Define heating fractions for e$^{-}$, p$^{+}$:</p>
+						  <div>
+						    <div class="ctr w95" style="float:center">
+						      <p> </p>
+						      <p> </p>
+						      <p style="border: 4px solid #6ca0e8; text-align:right; display:inline-block;border-radius:10px;padding: 10px 10px 10px 10px;">
+						  \[\begin{aligned}
+						  M_{T\rm e} &amp; = \frac{\theta_{\rm e,down} - \theta_{\rm e,up}}{\frac{m_{\rm i}}{m_{\rm e}} \sigma_{\rm i}}, \, 
+						  M_{T\rm i}       = \frac{\theta_{\rm i,down} - \theta_{\rm i,up}}{\sigma_{\rm i}}
+						  \end{aligned} \]
+						      </p>
+						    </div>
+						    <div class="w50" style="float:left">
+						      <img src="2drecbox_inout2.png" style="display:inline-block; border: 4px solid #6ca0e8;border-radius:10px;"> </img>
+						    </div>
+						    <div class="w40" style="float:right">
+						      <img src="gf_sketch.png" style="display:inline-block; border: 4px solid #6ca0e8;border-radius:10px;"> </img>
+						    </div>
+				  <!-- 		    <div class="w95" style="float: center; display:inline-block;"> -->
+				  <!-- 		      <ul> -->
+				  <!-- 			<li> -->
+				  <!-- 			  Thermal heating per particle as a fraction of inflowing magnetic energy -->
+				  <!-- 			</li> -->
+				  <!-- 			<li> -->
+				  <!-- 			  <li> -->
+				  <!--   $\theta_{\rm e}=k_{\rm B} T_{\rm e}/m_{\rm e} c^2, \theta_{\rm i}=k_{\rm B} T_{\rm i}/m_{\rm i} c^2$ are dimensionless temp. -->
+				  <!-- </li> -->
+				  <!-- 			</li> -->
+				  <!-- 			</ul> -->
+				  <!-- 		    </div> -->
+				  <!-- 		  </div> -->
+				</section>
+
+				<section>
+				  <h2>Electron heating in non-rel. regime</h2>
+				  <div style="float: left" class="w50">
+				    <p> Heating fraction can be written as:</p>
+				    <p style="text-align:center; padding: 10px 10px 10px 10px; border: 4px solid #6ca0e8;border-radius:10px; display:inline-block;"> $M_{T\rm e} = \frac{k_{\rm B} T_{\rm e,out} - k_{\rm B} T_{\rm e,in}}{m_{\rm i} v_{\rm A}^{2}}$</p>
+				    <p style="text-align:left"> (slope of black line in this plot $\rightarrow$)</p>
+				    <p> For wide range of inflow parameters, $M_{T\rm e}$ is constant</p>
+				  </div>
+				  <div class="w50" style="float: right">
+				    <img src="DrakeMTe.png" style="margin: 0 0 0 0; border: 4px solid #6ca0e8;border-radius:10px;">
+				    <p class="rcred"><a href="">Drake+ (2014)</a></p>
+				  </div>
+				  <div class="w90" style="float: center; display:inline-block;">
+				    <p>
+				      <span style="color:#cc7691"> $M_{T\rm e} \approx 0.033$ </span> for
+				      <span style="color:#cc7691">$m_{\rm i}/m_{\rm e}=25$</span>.  When extrapolated to realistic mass ratio
+				      <span style="color: lime">$m_{\rm i}/m_{\rm e}=1836,$ $M_{T\rm e} \approx 0.017$</span>
+				    </p>
+				  </div>
+				  <div class="w50">
+				   
+				  </div>
+				</section>
+				
+				<section>
+				  <h2>Simulation setup: inflow parameters</h2>
+				  <table style="padding: 10px 10px 10px 10px; border: 4px solid #6ca0e8;border-radius:10px;">
+				    <thead>
+				      <tr>
+					<th>$$\beta_{\rm i}$$</th>
+					<th>$$\sigma_{\rm i}$$</th>
+					<th>$$\theta_{\rm e}$$</th>
+					<th>$$\theta_{\rm i}$$</th>
+				      </tr>
+				    </thead>
+						<tbody>
+						  <tr>
+						    <td> <span>4.9$~\times~$10$^{\rm -4}$</span></td>
+						    <td> <span>0.10    </span></td>
+						    <td> <span style="color:#6ca0e8">0.010   </span></td>
+						    <td> <span>2.4$~\times~$10$^{\rm -5}$ </span></td>
+						  </tr>
+						  <tr>
+						    <td> <span>0.031  </span></td>
+						    <td> <span>0.10   </span></td>
+						    <td> <span style="color:#8794cf">0.041  </span></td>
+						    <td> <span>0.0016 </span></td>
+						  </tr>
+						  <!-- <tr> -->
+						  <!--   <td> <span>0.13   </span></td> -->
+						  <!--   <td> <span>0.10   </span></td> -->
+						  <!--   <td> <span style="color:#a388b6">0.17   </span></td> -->
+						  <!--   <td> <span>0.0067 </span></td> -->
+						  <!-- </tr> -->
+						  <tr>
+						    <td> <span>0.50  </span></td>
+						    <td> <span>0.12  </span></td>
+						    <td> <span style="color:#cc7691">0.77  </span></td>
+						    <td> <span>0.031 </span></td>
+						  </tr>
+						  <tr>
+						    <td> <span>2.0  </span></td> 
+						    <td> <span>0.38 </span></td>
+						    <td> <span style="color:#f6656c">9.9  </span></td>
+						    <td> <span>0.39 </span></td>
+						  </tr>
+						</tbody>
+				  </table>
+				  <p> </p>
+				  <ul>
+				  <li>
+				    For each case, vary guide field from $b_{\rm g}=0$ (antiparallel) to $6$
+				  </li>
+				  <li>
+				    Electron temperature ranges from  <span style="color:#6ca0e8">non-rel.</span> to  <span style="color:#f6656c">ultra-rel.</span>
+				  </li>
+				  <li>
+				    Ions remain sub-relativistic
+				  </li>
+				  <li>
+					  Realistic mass ratio: $m_{\rm i}/m_{\rm e}=1836$, and $T_{\rm e}/T_{\rm i}=1$
+				  </li>
+				  <li>
+				    $\sigma_{w}=0.1$ for each row in the table; $\sigma_{\rm i}$ <em> changes </em>
+				  </li>
+				  <li>
+				    For a few cases, vary $\sigma_{w}$ and $T_{\rm e}/T_{\rm i}$
+				  </li>
+				  </ul>
+				</section>
+
+				<section>
+				  <h2>Simulation setup: trigger reconnection</h2>
+				  <div style="float: right;" class="ctr w45">
+				    <p> B-field initialized in Harris equilibrium:</p>
+				    <p style="text-align:center; padding: 10px 10px 10px 10px; border: 4px solid #6ca0e8;border-radius:10px; display:inline-block;">
+				      $\mathbf{B} = B_{0} {\rm tanh}(y/\Delta)\mathbf{\hat{x}}$
+				    </p>
+				    <ul>
+				      <li> Hot, overdense strip of particles (green) </li>
+				      <li> Remove particle pressure in center to drive reconnection </li>
+				      <li> System evolves self-consistently </li>
+				    </ul>
+				  </div>
+				  <div class="w50" style="float: left">
+				    <img style="border: 4px solid #6ca0e8; border-radius:10px;" src="trigger1.png">
+				  </div>
+				</section>
+				
+				
+				<section data-transition="none">
+				  <h2>Simulation setup: trigger reconnection</h2>
+				  <div style="float: right;" class="ctr w45">
+				    <p> B-field initialized in Harris equilibrium:</p>
+				    <p style="text-align:center; padding: 10px 10px 10px 10px; border: 4px solid #6ca0e8;border-radius:10px; display:inline-block;">
+				      $\mathbf{B} = B_{0} {\rm tanh}(y/\Delta)\mathbf{\hat{x}}$
+				    </p>
+				    <ul>
+				      <li> Hot, overdense strip of particles (green) </li>
+				      <li> Remove particle pressure in center to drive reconnection </li>
+				      <li> System evolves self-consistently </li>
+				    </ul>
+				  </div>
+				  <div class="w50" style="float: left">
+				    <img style="border: 4px solid #6ca0e8; border-radius:10px;" src="trigger2.png">
+				  </div>
+				</section>
+				
+				
+				<section data-transition="none">
+				  <h2>Simulation setup: trigger reconnection</h2>
+				  <div style="float: right;" class="ctr w45">
+				    <p> B-field initialized in Harris equilibrium:</p>
+				    <p style="text-align:center; padding: 10px 10px 10px 10px; border: 4px solid #6ca0e8;border-radius:10px; display:inline-block;">
+				      $\mathbf{B} = B_{0} {\rm tanh}(y/\Delta)\mathbf{\hat{x}}$
+				    </p>
+				    <ul>
+				      <li> Hot, overdense strip of particles (green) </li>
+				      <li> Remove particle pressure in center to drive reconnection </li>
+				      <li> System evolves self-consistently </li>
+				    </ul>
+				  </div>
+				  <div class="w50" style="float: left">
+				    <img style="border: 4px solid #6ca0e8; border-radius:10px;" src="trigger3.png">
+				  </div>
+				</section>
+				
+				
+				<section data-transition="none">
+				  <h2>Simulation setup: trigger reconnection</h2>
+				  <div style="float: right;" class="ctr w45">
+				    <p> B-field initialized in Harris equilibrium:</p>
+				    <p style="text-align:center; padding: 10px 10px 10px 10px; border: 4px solid #6ca0e8;border-radius:10px; display:inline-block;">
+				      $\mathbf{B} = B_{0} {\rm tanh}(y/\Delta)\mathbf{\hat{x}}$
+				    </p>
+				    <ul>
+				      <li> Hot, overdense strip of particles (green) </li>
+				      <li> Remove particle pressure in center to drive reconnection </li>
+				      <li> System evolves self-consistently </li>
+				    </ul>
+				  </div>
+				  <div class="w50" style="float: left">
+				    <img style="border: 4px solid #6ca0e8; border-radius:10px;" src="trigger4.png">
+				  </div>
+				</section>
+				
+				<section>
+				  <h2>Simulation setup: periodic vs. outflow bc</h2>
+				  <div class="w90" style="float: center; display:inline-block;">
+				    <small style="text-align:left;">
+				      Outflow simulations allow for evolution of system over multiple Alfvénic crossing times $t_{\rm A}$ (but converge to results of periodic if measured appropriately)
+				    </small>
+				  </div>
+				  <div style="float: right" class="ctr w45">
+				    <video data-autoplay src="dens_out.webm"  style="border: 4px solid #6ca0e8;border-radius:10px;" loop controls></video>
+				  </div>
+				  <div class="w45" style="float: left">
+				    <video data-autoplay src="dens_per.webm"  style="border: 4px solid #6ca0e8;border-radius:10px;" loop controls></video>
+				  </div>
+				  
+				</section>
+				
+				<section >
+				  
+				  <h2>Use particle mixing as a proxy for rec. region</h2>
+				  <div style="float: left" class="w50">
+				    <p> Use mixing as a criterion to ID cells where rec. has occured:</p>
+				    <p style="text-align:center; padding: 10px 10px 10px 10px; border: 4px solid #6ca0e8;border-radius:10px; display:inline-block;">
+				      $r_{\rm down} < \frac{n_{\rm top}}{n_{\rm tot}}<1-r_{\rm down}$
+												</p>
+				    <ul>
+				      <li> Measured heating fractions $M_{T\rm e}, M_{T\rm i}$ somewhat sensitive to choice of $r_{\rm down}$ </li>
+				      <li> Change of $\sim 15\%$  from $r_{\rm down}=0.1$ to $0.3$ </li>
+				      <li> Mixing criterion appropriate for nonzero guide field</li>
+				    </ul>
+				  </div>
+				  <div class="w50" style="float: right">
+				    <img style="border: 4px solid #6ca0e8; border-radius:10px;" src="downstreamID1_pic.png">
+				    <p class="rcred"><a href="">Drake+ (2014)</a></p>
+				  </div>
+				  <!-- <div class="w90" style="float: center; display:inline-block;"> -->
+				  <!--   <p> -->
+				  <!--     This is the heating ratio for $m_{\rm i}/m_{\rm e}=25.$  When extrapolated to realistic mass ratio $m_{\rm i}/m_{\rm e}=1836,$ $M_{T\rm e} \approx 0.017$ -->
+				  <!--   </p> -->
+				  <!-- </div> -->
+				</section>
+				
+				<section>
+				  <h2>Focus on particles in 'primary islands'</h2>
+				  <div style="float: left" class="w50">
+				    <p> Focus on 'island' region, where energy of bulk motion from outflows  has thermalized:</p>
+				    <ul>
+				      <li> Select region within a contour of the vector potential $A_{z}$ as 'island'</li>
+				      <li> Threshold value of vector potential is chosen based on mixing at $x= \pm 1000 \, c/\omega_{\rm pe}$</li>
+				      <li> Exclude particles leftover from initialization (gray region at cores of island)</li>
+				    </ul>
+				  </div>
+				  <div class="w50" style="float: right">
+				    <img style="border: 4px solid #6ca0e8; border-radius:10px;" src="islandID_pic.png">
+				  </div>
+				  <!-- <div class="w90" style="float: center; display:inline-block;"> -->
+				  <!--   <p> -->
+				  <!--     This is the heating ratio for $m_{\rm i}/m_{\rm e}=25.$  When extrapolated to realistic mass ratio $m_{\rm i}/m_{\rm e}=1836,$ $M_{T\rm e} \approx 0.017$ -->
+				  <!--   </p> -->
+				  <!-- </div> -->
+				</section>
+				
+				<section>
+				  <h2>Adiabatic-compressive vs. genuine heating</h2>
+				  <p> When gas is compressed adiabatically, internal energy increases and entropy per particle remains <b>constant</b></p>
+				  <p>
+				    How much heating in the downstream is an effect of adiabatic-compression (no increase in entropy)?
+				  </p>
+				  <p style="border: 4px solid #6ca0e8; text-align:center; display:inline-block;border-radius:10px;padding: 5px 5px 5px 5px;">
+				    \[\begin{aligned}
+				    \int_{u^{\rm up}}^{u^{\rm f}} \frac{1}{(\hat{\gamma}(u)-1)u} du - \log \left(\frac{n^{\rm f}}{n^{\rm up}}\right) = 0
+				    \end{aligned} \]
+				  </p>
+				  <ul>
+				    <li> Solve for $u_{\rm f}$, the predicted dimensionless internal energy </li>
+				  <li> Take the difference $u_{\rm down} - u_{\rm f}$ as the genuine heating</li>
+				  </ul>
+				</section>
+				
+				<section>
+				  <h2>Measure heating when 'quasi-steady'</h2>
+				  <div class="w50" style="float: left">
+				    <p>
+				      Extract heating by measuring 'quasi-steady' values in the island region; time average heating over $\sim1$ Alfvénic crossing time:
+				    </p>
+				    <div class="w100" style="float: left">
+				      <img style="border: 4px solid #6ca0e8; border-radius:10px;" src="bg_steady.png">
+				    </div>
+				    <!-- <ul> -->
+				    <!--   <li> -->
+				    <!-- 	Use diagnostics like flatness of 1D rec. region profiles  -->
+				    <!--   </li> -->
+				    <!--   <li> -->
+				    <!-- 	Is temperature profile flat? -->
+				    <!--   </li> -->
+				    <!--   <li> -->
+				    <!-- 	Does velocity saturate fraction of Alfvén limit? -->
+				    <!--   </li> -->
+				    <!-- </ul> -->
+				  <!--   <p style="border: 4px solid #6ca0e8; text-align:center; display:inline-block; border-radius:10px; padding: 10px 10px 10px 10px;"> -->
+				  <!-- 	\[\begin{aligned} -->
+				  <!-- 	\frac{v_{\rm A}}{c} &amp; = \sqrt{\frac{\sigma_{w}}{1+\sigma_{w}}} -->
+				  <!-- 	\end{aligned} \] -->
+				  <!-- </p> -->
+				  </div>
+				  <div style="float: right" class="ctr w45">
+				    <video data-autoplay src="quasi_steady.webm"  style="border: 4px solid #6ca0e8;border-radius:10px;" loop controls></video>
+				  </div>
+				</section>
+				
+				<section>
+				  <h2>Low-<span style="font-weight: normal">$\beta_{\rm i}$</span>, antiparallel reconnection <span style="font-weight: normal">($b_{\rm g}=0$)</span></h2>
+				  <p> Simulation parameters: $\beta_{\rm i}=0.0078, \sigma_{w}=0.1, T_{\rm e}/T_{\rm i}=0.1$ </p>
+				  <div class="ctr w100">
+				    <div>
+				      <video data-autoplay src="dens_lowbeta.webm"  style="border: 4px solid #6ca0e8;border-radius:10px;" loop controls></video>
+				    </div>
+				  </div>
+				  <ul>
+				  <li>
+				    'Wavefronts' recede at Alfvén speed (dragged by magnetic tension); plasma starts flowing into the reconnection layer
+				  </li>
+				  <li>
+				    Primary islands (the large blobs) contain particles used at initialization; secondary islands form due to tearing instability
+				  </li>
+				  </ul>
+				</section>
+				
+				<section>
+				  <h2>High-<span style="font-weight: normal">$\beta_{\rm i}$</span>, antiparallel reconnection <span style="font-weight: normal">($b_{\rm g}=0$)</span></h2>
+				   <p> Simulation parameters: $\beta_{\rm i}=2, \sigma_{w}=0.1, T_{\rm e}/T_{\rm i}=0.1, {\color{lime}{ N_{\rm ppc}=64}}$ </p>
+				  <div class="ctr w100">
+				    <div>
+				      <video data-autoplay src="dens_highbeta.webm"  style="border: 4px solid #6ca0e8;border-radius:10px;" loop controls></video>
+				    </div>
+				  </div>
+				   <ul>
+				  <li>
+				    No secondary islands
+				  </li>
+				  <li>
+				    Outflow is more homogeneous than in low-$\beta_{\rm i}$ case
+				  </li>
+				  <li>
+				    Fractional increase of quantities in reconnection exhaust is less than at low-$\beta_{\rm i}$ (e.g. electron and ion temperatures, density)
+				  </li>
+				  </ul>
+				</section>
+
+				<section>
+				  <h2>Low-<span style="font-weight: normal">$\beta_{\rm i}$, guide field dependence</span></h2>
+				  <p> Simulation parameters: $\beta_{\rm i} = 0.03, \sigma_{w} =0.1, b_{\rm g}=0.3, 1, 6$ </p>
+				  <div class="ctr w80">
+				      <video data-autoplay src="gf_compare2_animation.mp4"  style="border: 4px solid #6ca0e8;border-radius:10px;" loop controls></video>
+				  </div>
+				  <ul>
+				    Guide field radically shifts energy partition between electrons and protons; electrons heated more than protons  at high-$b_{\rm g}$
+				  </ul>
+				</section>
+				
+				<section>
+				  <h2>High-<span style="font-weight: normal">$\beta_{\rm i}$, guide field dependence</span></h2>
+				   <p> Simulation params: $\beta_{\rm i} = 2, \sigma_{w} =0.1, b_{\rm g}=0.3, 1, 6, {\color{lime}{ N_{\rm ppc}=64}}$ </p>
+				  <div class="ctr w80">
+				      <video data-autoplay src="gf_compare3_animation.mp4"  style="border: 4px solid #6ca0e8;border-radius:10px;" loop controls></video>
+				  </div>
+				   <ul>
+				  <!-- <li> -->
+				  <!--   formation of secondary islands is largely suppressed -->
+				  <!-- </li> -->
+				    At high-$\beta_{\rm i},$ electrons and protons are generally in equipartition, but guide field tends to suppress overall amount of heating
+				  <!-- <li> -->
+				  <!--   Fractional increase of quantities in reconnection exhaust is less than at low-$\beta_{\rm i}$ (e.g. electron and ion temperatures, density) -->
+				  <!-- </li> -->
+				  </ul>
+				</section>
+								
+				<section>
+				  <h2>Results I(a): transrel. heating, no guide field</h2>
+				  <!-- <div style="float: left" class="w50"> -->
+				  <!--   <p> Heating fraction can be written as:</p> -->
+				  <!--   <p style="text-align:center; padding: 10px 10px 10px 10px; border: 4px solid #6ca0e8;border-radius:10px; display:inline-block;"> $M_{T\rm e} = \frac{k_{\rm B} T_{\rm e,out} - k_{\rm B} T_{\rm e,in}}{m_{\rm i} v_{\rm A}^{2}}$</p> -->
+				  <!--   <p style="text-align:left"> (slope of black line in this plot $\Rightarrow$)</p> -->
+				  <!-- </div> -->				  
+				  <ul>
+				    <li> Increasing magnetization at fixed $\beta_{\rm i}$: plasma is more relativistic </li>
+				    <li> Seems to hasten onset of transition to rel. regime</li>
+				    <li> Decreasing elec., prot. scale-separation $\Rightarrow$ energy equipartition </li>
+				  </ul>
+				  <div class="ctr w90">
+				    <img style="margin: 0 0 0 0; border: 4px solid #6ca0e8; border-radius:10px;" src="result7.png">
+				    <p class="rcred"><a href="">Rowan, Sironi, Narayan (2017); arXiv:1708.04627</a></p>
+				  </div>
+				  
+				</section>
+  
+				<section>
+				  <h2>Results I(b): transrel. heating, guide field</h2>
+				  <ul>
+				  <li>
+				    Electron irr. heating at low-$\beta_{\rm i}$ nearly independent of $b_{\rm g}$
+				  </li>
+				  <!-- <li> -->
+				  <!--   Proton irreversible heating at low-$\beta_{\rm i}$ decreases $b_{\rm g}$ -->
+				  <!-- </li> -->
+				  <li>
+				    For $\beta_{\rm i}\sim\beta_{\rm i, max}$, both electron and proton irr. heating are nearly independent of $b_{\rm g}$; scale separation is about equal in this case
+				  </li>
+
+				  </ul>
+				  <div class="ctr w90">
+				    <img style="margin: 0 0 0 0; border: 4px solid #6ca0e8; border-radius:10px;" src="result2.png">
+				    <!-- <p class="rcred"><a style="font-size:100%;line-height:0.0em;margin:0;">Rowan+ (2019)</a></p> -->
+				    <p class="rcred"><a href="">Rowan, Sironi, Narayan (2019); arXiv:1901.05438</a></p>
+				  </div>
+				</section>
+</section>
+				<!--
+				    <section data-background="result3.png">
+				      <div class='wrapper' style='margin-top:100px'>
+					<div  class='firstDiv' style="color:black; background-color: black; opacity:0.75;" id="overlay">
+					  <p> </p>
+					  <h1 style="color:black;display:inline-block;text-align:center;"> Results III </h1>
+					</div>
+					<div class='secondDiv'>
+					  <p> </p>
+					  <h1 style="color:white; display:inline-block;text-align:center;"> ResultsIII </h1>
+					</div>
+				    </section>
+				    -->
+								
+				<section>
+				    <h2>Results II(a): <span style="font-weight: normal">$b_{\rm g}$</span>-dependence of heating</h2>
+				    <!-- <div style="float: left; text-align: left; width: 100%;"> -->
+				    <!--   <p> Out-of-plane component of magnetic field, perpendicular to antiparallel field lines; $b_{\rm g} = B_{\rm r}/B_{0}$) - substantial change to heating! </p> -->
+				    <!-- </div> -->
+				    <!-- <ul> -->
+				    <!--   <li> At low-$\beta_{\rm i},$ electron heating (genuine and total) depends $m_{\rm i}/m_{\rm e}$</li> -->
+				    <!--   <li> At low-$\beta_{\rm i},$ $\color{lime}{M_{T\rm e, tot} \approx 0.017}$, for realistic mass ratio</li> -->
+				    <!--   <li> At $\beta_{\rm i}=2,$ $M_{T\rm e, tot} \approx 0.06$, independent of mass-ratio</li> -->
+				    <!--   <li> Ion heating is indep. of $m_{\rm i}/m_{\rm e}\Rightarrow$ box large enough for all $\beta_{\rm i}$ -->
+				    <!-- </ul> -->
+				    <div class="w45" style="float: left">
+				      <ul>
+					Elec. irr. heating fraction:
+				      </ul>
+				      <p style="border: 4px solid #6ca0e8; text-align:center; display:inline-block; border-radius:10px; padding: 3px 3px 3px 3px;">
+					\[\begin{aligned}
+					q_{u\rm e, irr} &amp; = \frac{M_{u\rm e,irr}}{M_{u\rm e,irr} +M_{u\rm i,irr}}
+					\end{aligned} \]
+				      </p>
+				      <ul>
+					Fitting function provides dep. of elec. irr. heating on plasma parameters:
+				      </ul>
+				    </div>
+				    <div class="w45" style="float: right">
+				      <img style="border: 4px solid #6ca0e8; border-radius:10px;" src="gf_result1.png">
+				    </div>
+				    <p style="margin: 0 0 0 0; border: 4px solid #6ca0e8; text-align:center; display:inline-block; border-radius:10px; padding: 10px 10px 10px 10px;">
+				      \[\begin{aligned}
+				      q_{u \rm e, irr, fit}(\beta_{\rm i}, b_{\rm g}, T_{\rm e}/T_{\rm i}, \sigma_{w}) = \frac{1}{2} (\tanh(0.33 b_{\rm g})-0.4) \\
+				      \times 1.7 \tanh \left( \frac{(1-\beta_{\rm i}/\beta_{\rm i, max})^{1.5}}{(0.42 + T_{\rm e}/T_{\rm i})\sigma_{w}^{0.3}}\right) + \frac{1}{2}
+					\end{aligned} \]
+				    </p>
+				</section>
+				<section>
+				  <h2>Results II(b): <span style="font-weight: normal">$b_{\rm g}$</span>-dependence of heating</h2>
+				    <div style="float: left; text-align: left; width: 100%;">
+				      <p> Particle heating in the presence of a guide field looks more similar to heating via turbulence; at small enough scales, turbulence is thought to be mediated by strong guide field reconnection</p>
+				    </div>
+				    
+				    <div class="ctr w100">
+				      <img style="margin: 0 0 0 0; border: 4px solid #6ca0e8; border-radius:10px;" src="gf_result2.png">
+				      <p class="rcred"><a style="font-size:100%;line-height:0.8em;margin:0;">Rowan, Sironi, Narayan (2019); Kawazura+ (2018)</a></p>
+				    </div>
+				</section>
+				
+				<section>
+				  <h2>Results III(a): Guiding-center analysis</h2>
+				  <div style="float: left; text-align: left; width: 60%;">
+				    <p style = "text-align: center;"> Track particles from upstream to downstream to assess relative importance of heating mechanisms</p>
+				    <p style="border: 4px solid #6ca0e8; text-align:center; display:inline-block; border-radius:10px; padding: 3px 3px 3px 3px;">
+					\[\begin{aligned}
+					\frac{d \varepsilon_{\rm e}}{dt} = q \mathbf{E} \cdot (\mathbf{v}_{\parallel} + \mathbf{v}_{\rm c} + \mathbf{v}_{\nabla B}) + \frac{\mu}{\gamma} \frac{\partial B}{\partial t}
+					\end{aligned} \]
+				    </p>
+				  </div>
+				  <div style="float: right;" class="w35">
+				    <img style="border: 4px solid #6ca0e8; border-radius:10px;" src="result4a.png">
+				  </div>
+				  <div class="ctr w95">
+				    <img style="margin: 0 0 0 0; border: 4px solid #6ca0e8; border-radius:10px;" src="result4b.png">
+				  </div>
+				</section>
+				
+				<section>
+				  <h2>Results III(b): Guiding-center analysis</h2>
+				  <div style="float: left; text-align: center; width: 100%;">
+				    <p style = "text-align: left;"> Curvature heating tends to dominate for weak guide field, whereas $E$-parallel dominates for strong guide field (in this case, the magnetic field is almost straight in the out-of-plane direction)</p>
+				  </div>
+				  <div class="ctr w95">
+				    <img style="margin: 0 0 0 0; border: 4px solid #6ca0e8; border-radius:10px;" src="result5.png">
+				  </div>
+				</section>
+
+				<section>
+				    <h2>Results IV: <span style="font-weight: normal">$b_{\rm g}$</span>-dependence of rec. rate</h2>
+				    <p style="text-align: center"> Guide field suppresses reconnection rate, more variation at low-$\beta_{\rm i}$ </p>
+				    <div class="ctr w70">
+				      <img style="border: 4px solid #6ca0e8; border-radius:10px;" src="result1.png">
+				    </div>
+				</section>
+
+				<section>
+				  <h2>Outline</h2>
+				  <ul style="position: absolute; width: 45%; 
+					     height: 25%; top: 0; bottom: 0; 
+					     right: 0; left: 0; 
+					     margin: auto;">
+				    <li> Introduction </li>
+				    <li> Magnetic reconnection </li>
+				    <li> <span style="color: lime"> Kelvin-Helmholtz instability </span> </li>
+				  </ul>
+				</section>
+
+				<section>
+				  <h2>Kelvin-Helmholtz instability occurs all over</h2>
+				   <p> KH instability is ubiquitous in nature; here, KH forms in clouds: </p>
+				   <div class="container">
+				     <video 
+					    width="100%"
+					    height="100%"
+					    id="khclouds"
+				            style="transform: translate(0%, 10%)"
+					    data-autoplay src="KHclouds.mp4"
+					    loop controls>
+				     </video>
+				     <p class="rcred"><a href="https://www.youtube.com/watch?v=Jfn2xKQsLpE"
+							 style="position: absolute; 
+								top: 640px;
+								right: 20px;
+								font-size:75%;
+								line-height:0.8em;margin:0;">Jim Collier (2018)</a></p>
+				   </div>
+				</section>
+
+				<section>
+				  <h2>How does the KH instability grow?</h2>
+				  <p> Velocity perturbation $\perp$ to shear velocity $\beta_{\rm sh}$ $\rightarrow$ unstable growth</p>
+				  <div class="ctr w70">
+				    <img style="border: 0px solid #6ca0e8; border-radius:10px;" src="KH_how.png">
+				   </div>
+				   <div class="container">
+				     <video 
+					    width="70%"
+					    height="70%"
+					    id="khclouds"
+				            style="transform: translate(0%, 20%)"
+					    data-autoplay src="pluto_movie_nofieldlines.mp4"
+					    loop controls>
+				     </video>
+				   </div>
+				</section>
+
+				<section>
+				  <h2>Physics of the KH instability</h2>
+				  <div style="float: left" class="w60">
+				    <p> In addition to shear velocity $\beta_{\rm sh}$, consider a magnetic field
+				      <span style="color: lime">$B_{0}$</span> that permeates the plasma</p>
+				    <ul>
+				      <li> If the magnetic field is too strong, magnetic tension inhibits KH </li>
+				      <li> Parametrize relative strength of field by Alfvénic Mach number,
+					$\zeta\equiv v_{\rm A}/c_{\rm s}$; $c_{\rm s}=\sqrt{\Gamma_{\rm ad} \theta/h}$
+					is the sound speed, $h$ is specific enthalpy
+				      </li>
+				      <li> Instability must also respect the subsonic bound
+					$\mathcal{M}\le\sqrt{2}$</li>
+				      <li> $\mathcal{M}\equiv \beta_{\rm sh}/c_{\rm s}$ is the Mach number</li>
+				    </ul>
+				  </div>
+				  <div class="w40" style="float: right">
+				    <img style="border: 0px solid #6ca0e8; border-radius:10px;" src="kh_setup_diagram.png">
+				  </div>
+				  <div class="w40" style="float: right">
+				    <img style="border: 4px solid #6ca0e8; border-radius:10px;" src="KH_gr_mhd_relmach.png">
+				  </div>
+
+				</section>
+
+				<section>
+				  <h2>KH instability in astrophysical jets</h2>
+				  <div style="float: left" class="w55">
+				    <p> A number of simulations suggest evidence for KH instability
+				      at the interface of the jet and wind/corona, which motivates a
+				      KH setup with:
+				    </p>
+				    <ul>
+				      <li> Strongly magnetized jet </li>
+				      <li> Weakly magnetized wind  </li>
+				      <li> Somewhat relativistic shear flow </li>
+				      <li> KH-induced reconnection? </li>
+				    </ul>
+				  </div>
+				  <div class="w40" style="float: right">
+				    <img src="jet_wind_interface.png" style="border: 4px solid #6ca0e8; border-radius:10px; margin: 0;">
+				    <!-- <p class="rcred"><a href="http://dx.doi.org/10.1146/annurev-astro-082812-141003"  style="font-size:75%;line-height:0.8em;margin:0;">Sadowski (2013); A. Tchekhovskoy; Yuan+Narayan (2014)</a></p> -->
+				  </div>
+				  <p style="border: 4px solid #6ca0e8; text-align:center; display:inline-block; border-radius:10px; padding: 10px 10px 10px 10px;">
+				    Addressing the question of magnetic dissipation
+				    via magnetic reconnection requires fully-kinetic PIC simulation
+				  </p>
+				</section>
+
+				<section>
+				  <section>
+				    <h2>Predicted growth rate of KH instabilty</h2>
+				    <p>
+				      Three-pronged attack to studying KH-induced reconnection:
+				    </p>
+				    <div style="float: left" class="w100">
+				      <ul>
+					<li> <span class="fragment highlight-green">
+					    What physical parameters lead to KH unstable growth?
+					  </span>
+					</li>
+					<li> Does PIC capture the predicted growth rate? </li>
+					<li> Does PIC show evidence of magnetic dissipation? </li>
+				      </ul>
+				    </div>
+				    <p>
+				      To answer the first point, solve relativistic magnetohydrodynamic (RMHD) dispersion relation
+				      (i.e., polynomial in $\phi_{v_{\rm A}}$) of the form:
+				    </p>
+				    <p style="margin: 0 0 0 0; border: 4px solid #6ca0e8; text-align:center; display:inline-block; border-radius:10px; padding: 3px 3px 3px 3px;">
+				      \[\begin{aligned}
+				      F(\phi_{v_{\rm A}}, \rm{params}) &amp; = 0
+				      \end{aligned} \]
+				    </p>
+				    <p>
+				      $\phi_{v_{\rm A}} \equiv \omega/(k_{0} v_{\rm A})$ is the dimensionless
+				      growth rate of the mode 
+				      <!-- with wavevector $k_0$ and $\omega$ is the angular velocity of the mode -->
+				    </p>
+				    <p style="margin:0 0 0 0; border: 4px solid #6ca0e8; text-align:center; display:inline-block; border-radius:10px; padding: 3px 3px 3px 3px;">
+				      Im$(\phi_{v_{\rm A}})>0 \rightarrow $ unstable growth
+				    </p>
+				</section>
+				<section>
+				  <h2>Predicted growth rate of KH instabilty</h2>
+				  <p>
+				    Explicit dispersion relation:
+				    </p>
+				  <div class="w45" style="float: left">
+				    <img style="border: 4px solid #6ca0e8; border-radius:10px;" src="F1.png">
+				  </div>
+				  <div class="w45" style="float: right">
+				    <img style="border: 4px solid #6ca0e8; border-radius:10px;" src="F2.png">
+				  </div>
+				  <div class="w45" style="float: right">
+				    <img style="margin: 0 0 0 0; border: 4px solid #6ca0e8; border-radius:10px;" src="F3.png">
+				  </div>
+				</section>
+                                </section>
+				
+				<section>
+				  <h2>Simulation setup</h2>
+				  <div style="float: left" class="w100">
+				      <ul>
+					<li> 'Sit' in rest frame of the jet; wind moves with velocity $\beta_{\rm sh}$ </li>
+					<li> Jet is strongly magnetized with in-plane magnetic field
+					  <span style="color:lime">
+					    $B_{x0, \,\rm j}$
+					  </span>
+					  and out-of-plane (guide-field) component
+					  <span style="color:lime">
+					    $B_{z0, \,\rm j}$
+					  </span>
+					</li>
+					<li>
+					  Wind is weakly magnetized with out-of-plane mag. field
+					  <span style="color:lime">
+					    $B_{z0, \,\rm w}$
+					  </span>
+					</li>
+				      </ul>
+				    </div>
+				  <div class="ctr w80">
+				    <img style="margin: 0 0 0 0; border: 0px solid #6ca0e8; border-radius:10px;" src="KH_setup.png">
+				  </div>
+				</section>
+
+				<section>
+				  <h2>Simulation parameters</h2>
+				  <table style="padding: 10px 10px 10px 10px; border: 4px solid #6ca0e8;border-radius:10px;">
+				    <thead>
+				      <tr>
+					<th><it>Parameter</it></th>
+					<th><it>Description</it></th>
+				      </tr>
+				    </thead>
+				    <tbody>
+				      <tr>
+					<td> <span>$\beta_{{\rm i}x}$</span></td>
+					<td> <span> Plasma-beta in jet, computed with in-plane $B_{x0,\,\rm{j}}$ </span></td>
+				      </tr>
+				      <tr>
+					<td> <span>$\sigma_{wx}$</span></td>
+					<td> <span> Magnetization in jet, computed with in-plane $B_{x0,\,\rm{j}}$</span></td>
+				      </tr>
+				      <tr>
+					<td> <span>$\beta_{\rm sh}$</span></td>
+					<td> <span>Speed of wind relative to jet</span></td>
+				      </tr>
+				      <tr>
+					<td> <span>$b_{\rm j}$</span></td> 
+					<td> <span>$B_{z0,\,\rm{j}}/B_{x0,\,\rm{j}}$; jet guide field strength</span></td>
+				      </tr>
+				      <tr>
+					<td> <span>$b_{\rm w}$</span></td> 
+					<td> <span>$B_{z0,\rm{w}}/B_{x0,\,\rm{j}}$; wind guide field strength</span></td>
+				      </tr>
+				      <tr>
+					<td> <span>$\rho_{0\rm j}$</span></td> 
+					<td> <span>Mass density in jet</span></td>
+				      </tr>
+				      <tr>
+					<td> <span>$\rho_{0\rm w}$</span></td> 
+					<td> <span>Mass density in wind</span></td>
+				      </tr>
+				      <tr>
+					<td> <span>$f$</span></td> 
+					<td> <span>$k_{z}/k_{x}$; controls ang. of propagation of perturbation</span></td>
+				      </tr>
+				    </tbody>
+				  </table>
+				</section>
+
+				<section>
+				  <h2>Sample simulation: RMHD</h2>
+				  <div class="w55" style="float: left">
+				    <p> Time evolution of Fourier power (left) for RMHD simulation; parameters: $\beta_{\rm sh}=0.8$,
+				    $\sigma_{wx}=1$, $\beta_{\rm{i}x}=0.078$, $b_{\rm j}=3$, $b_{\rm w}=0.3$,
+				    $\rho_{0\rm{w}}/\rho_{0\rm{j}}=6.7$
+				  </p>
+				      <img style="margin:0 0 0 0; border: 4px solid #6ca0e8; border-radius:10px;" src="pluto_growth.png">
+				  </div>
+				  <div class="w40" style="float: right">
+				      <img style="margin:0 0 0 0; border: 4px solid #6ca0e8; border-radius:10px;" src="pluto_panels.png">
+				  </div>
+				</section>
+
+				<section>
+				  <h2>Sample simulation: PIC</h2>
+				  <p> Time evolution of density for PIC run; parameters: $\beta_{\rm sh}=0.8$,
+				    $\sigma_{wx}=1$, $\beta_{\rm{i}x}=0.078$, $b_{\rm j}=3$, $b_{\rm w}=0.3$,
+				    $\rho_{0\rm{w}}/\rho_{0\rm{j}}=6.7$
+				  </p>
+				  <div class="ctr w70">
+				    <div>
+				      <video data-autoplay src="tristan_movie.mp4"
+					     style="border: 4px solid #6ca0e8;border-radius:10px;" loop controls>
+				      </video>
+				    </div>
+				  </div>
+				  
+				</section>		
+				
+				<section>
+				  <h2>Sample simulation: PIC</h2>
+				  <p> Time evolution of Fourier power (left) for PIC run; parameters: $\beta_{\rm sh}=0.8$,
+				    $\sigma_{wx}=1$, $\beta_{\rm{i}x}=0.078$, $b_{\rm j}=3$, $b_{\rm w}=0.3$,
+				    $\rho_{0\rm{w}}/\rho_{0\rm{j}}=6.7$
+				  </p>
+				  <div class="w30" style="float: left">
+				    <p> Dashed lines below correspond to 2D density profiles $\rightarrow$</p>
+				      <img style="margin:0 0 0 0; border: 4px solid #6ca0e8; border-radius:10px;" src="PIC_gr.png">
+				  </div>
+				  <div class="w65" style="float: right">
+				      <img style="margin:0 0 0 0; border: 4px solid #6ca0e8; border-radius:10px;" src="PIC_time_evol.png">
+				  </div>
+				</section>		
+
+				<section>
+				  <section>
+				    <h2>Measured growth rate of KH: RMHD</h2>
+				    <p>
+				      Relativistic MHD simulations show good agreement with prediction:
+				    </p>
+				    <div class="ctr w80">
+				      <img style="margin: 0 0 0 0; border: 4px solid #6ca0e8; border-radius:10px;" src="KH_gr_mhd_all.png">
+				    </div>
+				    <p>
+				      Growth rate dependence on density ratio $\rho_{0\rm{w}}/\rho_{0\rm{j}}$ shows that
+				      even for $\rho_{0\rm{w}}/\rho_{0\rm{j}}\approx 10^3$,
+				      growth is reduced by only a factor of $3$–$4$
+				    </p>
+				  </section>
+				  <section>
+				    <h2>Measured growth rate of KH: RMHD</h2>
+				    <p>
+				      Convergence of growth rate with respect to ratio of transition width to box height
+				    </p>
+				    <div class="ctr w60">
+				      <img style="border: 4px solid #6ca0e8; border-radius:10px;" src="pluto_convergence_test.png">
+				    </div>
+				  </section>
+				</section>
+
+				<section>
+				  <section>
+				  <h2>Measured growth rate of KH: PIC</h2>
+				  <div style="margin: 0 0 0 0; float: left" class="w100">
+				    <ul>
+				      <li> 
+					What physical parameters lead to KH unstable growth?
+				      </li>
+				      <li>
+					<span style="color:lime">
+					  Does PIC capture the predicted growth rate?
+					</span>
+				      </li>
+				      <li>
+					Does PIC show evidence of magnetic dissipation?
+				      </li>
+				    </ul>
+				  </div>
+				  <div style="float: right" class="w65">
+				    <img style="border: 4px solid #6ca0e8; border-radius:10px;" src="KH_gr_all.png">
+				  </div>
+				  <p>
+				    PIC simulations and analytical predictions show good agreement
+				  </p>
+				  <p class="w35">
+				    Errorbars computed as standard deviation of measured slopes from five
+				    simulations with different random initial conditions
+				  </p>
+				  </section>
+				  <section>
+				    <h2>Measured growth rate of KH: PIC</h2>
+				    <p> Growth rates for give simulations with different random initial seeds</p>
+				    <div class="ctr w60">
+				      <img style="margin: 0 0 0 0; border: 4px solid #6ca0e8; border-radius:10px;" src="random.png">
+				    </div>
+				  </section>
+				</section>
+
+				<section>
+				  <h2>Measured growth rate of KH in 3D: PIC</h2>
+				   <p> Time evolution of density for 3D simulation; blue is jet, red is wind </p>
+				   <div class="container">
+				     <video width="80%"
+					    height="80%"
+					    id="kh3d"
+					    style="transform: translate(0%, 0%); border: 0 0 0 0 "
+					    data-autoplay src="bi1.0E-03.sw1.0E+00.bs8.0E-01.bth3.0E+00.ds45.my500.comp2.mime1.3D.skx.mp4"
+					    loop controls>
+				     </video>
+				     <p class="w100"
+				       style="position: absolute; 
+				       top: 550px;
+				       line-height:0.8em;margin:0;">
+				       parameters: $\beta_{\rm sh}=0.8$,
+				       $\sigma_{wx}=1$, $\beta_{\rm{i}x}=0.001$, $b_{\rm j}=3$, $b_{\rm w}=0.3$,
+				       $\rho_{0\rm{w}}/\rho_{0\rm{j}}=6.7$; box size is $250\times 750\times 250\, c/\omega_{\rm p e}$ (jet skin depths)
+				    </p>
+				  </div>
+				</section>
+
+				<section>
+				  <h2>Measured growth rate of KH in 3D: PIC</h2>
+				   <p> Comparison of predicted and measured growth rates from 3D run</p>
+				   <div class="w40" style="float: left">
+				     <p>
+				       Note that growth rate is largest for an angle slightly out of $xy$ plane;
+				       this angle in fact satisfies $k \cdot B_{0}\approx 0$
+				     </p>
+				    <div class="w100" style="float: left">
+				      <img style="border: 4px solid #6ca0e8; border-radius:10px;" src="KH_gr_3D.png">
+				    </div>
+				  </div>
+				  <div style="float: right" class="ctr w50">
+				    <img style="border: 4px solid #6ca0e8; border-radius:10px;" src="KH_gr_3D2.png">
+				  </div>
+				</section>
+
+				<section>
+				  <h2>Particle acceleration</h2>
+				  <div style="margin: 0 0 0 0; float: left" class="w100">
+				    <ul>
+				      <li> 
+					What physical parameters lead to KH unstable growth?
+				      </li>
+				      <li>
+					Does PIC capture the predicted growth rate?
+				      </li>
+				      <li>
+					<span style="color:lime">
+					  Does PIC show evidence of magnetic dissipation?
+					</span>
+				      </li>
+				    </ul>
+				  </div>
+
+				  <div class="w25" style="float: left">
+				    <p> Time evolution of electron energy spectra shows
+				      evidence for particle energization up to Lorentz factors 
+				      $\gamma \approx 100$</p>
+				  </div>
+				  <div class="w70" style="float:right">
+				    <video data-autoplay src="ang75.mp4"  style="border: 4px solid #6ca0e8;border-radius:10px;" loop controls></video>
+				  </div>
+				</section>
+				
+				<section>
+				  <section>
+				  <h2>Summary</h2>
+				  <p>
+				    Exploration of guide field reconnection (see arXiv:1901.05438):
+				  </p>
+				  <ul style="border:0 0 0 0; display:table; margin:0 auto; text-align:left; width:95%">
+				    <li> low-$\beta_{\rm i}$: irr. elec. heating nearly independent of $b_{\rm g}$</li>
+				    <li> Protons get heated much less with increasing $b_{\rm g}$</li>
+				    <li> As a result, for large $b_{\rm g}$, elec. receive the overwhelming majority of irreversible heating (∼93% for $b_{\rm g} = 6$) </li>
+				    <li> Differs significantly from antiparallel case (~18% vs. ~93%)</li>
+				  </ul>
+				  <p>
+				    Studied KH instability analytically, in RMHD, and in PIC:
+				  </p>
+				  <ul style="border:0 0 0 0; display:table; margin:0 auto; text-align:left; width:85%">
+				    <li> RMHD simulations show good agreement with prediction,
+				      validating our dispersion relation calculation </li>
+				    <li> PIC also shows agreement with dispersion relation</li>
+				    <li> PIC simulations of KH in jets show particle acceleration</li>
+				  </ul>
+				  <small style="text-align:center"> Design credits: <a href="https://github.com/hakimel/reveal.js/">Hakim El Hattab</a> (black.css theme),
+				    <a href="https://newton.cx/~peter/2013/09/slides-for-scientific-talks-in-html/">Peter K. G. Williams </a> (pkgwtheme.css)</small>
+				  </section>
+				  <section>
+				    <h2>Acknowledgements</h2>
+				    <ul style="border:0 0 0 0; display:table; margin:0 auto; text-align:left; width:85%">
+				    <li> Adviser: Ramesh Narayan </li>
+				    <li> Co-adviser: Lorenzo Sironi </li>
+				    <li> Academic adviser/committee member: Masahiro Morii </li>
+				    <li> Committee member: Doug Finkbeiner </li>
+				    <li> BHI/CfA admins: Nina Zonnevylle, Barbara Elfman, Mark Palmer,  Robb Scholten </li>
+				    <li> Physics admins: Carol Davis, Lisa Cacciabaudo, Silke Exner </li>
+				    <li> FAS Research Computing, especially Paul Edmon </li>
+				  </ul>
+				  </section>
+				  <section>
+				    <h2>Acknowledgements (cont.)</h2>
+				    <ul style="border:0 0 0 0; display:table; margin:0 auto; text-align:left; width:85%">
+				      <li> Current and previous group members: Andrew Chael, Brandon Curd, Xinyi Guo</li>
+				      <li> BHI/CfA postdocs: Atish Kamble, Xuening Bai, Nick Murphy, Paul Chesler,
+					Feraz Azhar, Maciek Wielgus, and Dom Pesce</li>
+				      <li> Friends: Jae Hyeon Lee, Dominik Wild, Ron Alexander, Matt Rispoli, Chris Frye, Michael Grome </li>
+				      <li> Undergraduate advisers: Jason Stalnaker, Bob Bosch </li>
+				      <li> Family: Mom, Dad, Ren (brother) </li>
+				  </ul>
+				  </section>
+				</section>
+				
+				<section>
+				   <section>
+				     <h2>Convergence tests</h2>
+				     <div class="ctr w90" style="display:inline-block;">
+				       <img class="ctr w60" style="border: 4px solid #6ca0e8; border-radius:10px;" src="conv_a.png">
+				     </div>
+				   </section>
+
+				   <section>
+				     <h2>Convergence tests</h2>
+				     <div class="ctr w90" style="display:inline-block;">
+				       <img class="ctr w50" style="border: 4px solid #6ca0e8; border-radius:10px;" src="conv_b.png">
+				     </div>
+				   </section>
+
+				   <section>
+				     <h2>Convergence tests</h2>
+				     <div class="ctr w90" style="display:inline-block;">
+				       <img class="ctr w70" style="border: 4px solid #6ca0e8; border-radius:10px;" src="conv_c.png">
+				     </div>
+				   </section>
+
+				   <section>
+				     <h2>Convergence tests</h2>
+				     <div class="ctr w90" style="display:inline-block;">
+				       <img class="ctr w90" style="border: 4px solid #6ca0e8; border-radius:10px;" src="conv_d.png">
+				     </div>
+				   </section>
+
+				   <section>
+				     <h2>Convergence tests</h2>
+				     <div class="ctr w70" style="display:inline-block;">
+				       <img class="ctr w90" style="border: 4px solid #6ca0e8; border-radius:10px;" src="conv_e.png">
+				     </div>
+				   </section>
+</section>
+
+
+						
+			</div>
+		</div>
+		
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+		
+		<script>
+		  
+		  // More info https://github.com/hakimel/reveal.js#configuration
+		  Reveal.initialize({
+		  controls: false,
+		  progress: true,
+		  history: true,
+		  center: true,
+		  
+		  transition: 'fade', // none/fade/slide/convex/concave/zoom
+		  math: {
+		  // mathjax: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js',
+		  config: 'TeX-AMS_HTML-full'
+		  },
+		  // More info https://github.com/hakimel/reveal.js#dependencies
+		  dependencies: [
+		  { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+		  { src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+		  { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+		  { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+		  { src: 'plugin/zoom-js/zoom.js', async: true },
+		  { src: 'plugin/notes/notes.js', async: true },
+		  { src: 'lib/js/classList.js' },
+		  { src: 'plugin/math/math.js', async: true }
+		  ]
+		  });
+		  
+		</script>
+	</body>
+</html>
