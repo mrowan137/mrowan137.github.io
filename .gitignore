@@ -1,2 +1,16 @@
+# MacOS temporary files
 .DS_Store
+
+# Backup
 *~
+
+# Audio
+*.mp3
+*.mid
+*.aiff
+*.aif
+
+# Presentations and posters
+*.pptx
+*.ppt
+*.key

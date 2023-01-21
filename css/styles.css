@@ -1,0 +1,74 @@
+/*
+  Styling
+*/
+
+/* setting monospace font globally */
+* {
+    font-family: monospace;
+    font-size: 1.0em;
+}
+
+/* styling hyperlinks */
+a {
+    font-size: 1.0em;
+    text-decoration: none;
+    color: #0600ff;  /* dark blue */
+}
+
+a:active {
+    color: #03007F;  /* darker blue */
+}
+
+a:visited {
+    color: #7F7F7F;  /* gray */
+}
+
+/* content section styling */
+.content {
+  content: " ";
+  display: block;
+  margin: 20px 20px;
+}
+
+/*
+  Top navigation bar
+*/
+.top-navigation-bar {
+  background-color: white;
+  overflow: hidden;
+  padding: 20px 20px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: left;
+  justify-content: left;
+  height: 100%;
+  border-bottom: 1px solid black;  /* horizontal line at bottom */
+}
+
+/* style links inside navigation bar */
+.top-navigation-bar a {
+  float: left;
+  color: #0600ff;  /* dark blue */
+  text-align: center;
+  text-decoration: none;
+  font-size: 1.2em;
+}
+
+/* underline links on hover inside navigation bar */
+.top-navigation-bar a:hover {
+  text-decoration: underline;
+}
+
+/* active link styling inside navigation bar */
+.top-navigation-bar a.active {
+  color: #0600ff;  /* dark blue */
+  text-decoration: underline;
+}
+
+/* styling dash inside navigation bar */
+.top-navigation-bar span.dash {
+    color: black;
+    display: inline-block;
+    width: 80px;
+    text-align: center;
+}
