@@ -30,6 +30,12 @@ a:visited {
   margin: 20px 20px;
 }
 
+/* section spacing */
+.section-spacing {
+  margin-bottom: 30px;
+}
+
+
 /*
   Top navigation bar
 */
