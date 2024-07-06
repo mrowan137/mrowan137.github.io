@@ -35,6 +35,16 @@ a:visited {
   margin-bottom: 30px;
 }
 
+/* bullet styling for multiple indentations */
+ul {
+  list-style-type: disc;
+}
+
+ul ul {
+  list-style-type: disc;  /* second indent use filled disc */
+  margin-left: -20px;
+}
+
 
 /*
   Top navigation bar
