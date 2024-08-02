@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Personal website of Michael E. Rowan</title>
+    <link rel="stylesheet" href="./css/styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+      #thumbnail-container {
+          display: flex;
+          flex-wrap: wrap; /* Allow thumbnails to wrap into rows */
+          gap: 10px; /* Space between thumbnails */
+          padding-bottom: 10px;
+          margin: 20px 0;
+      }
+      #thumbnail-container img {
+          width: 150px; /* Set thumbnail size */
+          height: auto;
+          cursor: pointer;
+          border: 2px solid #ccc;
+          transition: border-color 0.3s;
+      }
+      #thumbnail-container img:hover {
+          border-color: #000; /* Change border on hover */
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navigation bar -->
+    <div class="top-navigation-bar">
+      <a href="./index.html"> About </a>
+      <span class="dash"> &mdash;&mdash; </span>
+      <a href="./research.html"> Research </a>
+      <span class="dash"> &mdash;&mdash; </span>
+      <a href="./cv.html"> CV </a>
+      <span class="dash"> &mdash;&mdash; </span>
+      <a href="./misc.html"> Misc. </a>
+      <a> / </a>
+      <a class="active" href="./parquet-deformation-carpets.html"> Parquet Deformation Carpets </a>
+    </div>
+
+    <!-- Main content -->
+    <div class="content">
+      <div id="thumbnail-container">
+        <!-- Thumbnails linked to full-size images -->
+        <a href="imgs/parquet-deformation-carpets/parquet-deformation-carpet-3.jpg" class="glightbox" data-gallery="parquet-deformation-carpet-gallery">
+          <img src="imgs/parquet-deformation-carpets/parquet-deformation-carpet-3.jpg" alt="Parquet Deformation Carpet 3">
+        </a>
+        <a href="imgs/parquet-deformation-carpets/parquet-deformation-carpet-7.jpg" class="glightbox" data-gallery="parquet-deformation-carpet-gallery">
+          <img src="imgs/parquet-deformation-carpets/parquet-deformation-carpet-7.jpg" alt="Parquet Deformation Carpet 7">
+        </a>
+        <a href="imgs/parquet-deformation-carpets/parquet-deformation-carpet-5.jpg" class="glightbox" data-gallery="parquet-deformation-carpet-gallery">
+          <img src="imgs/parquet-deformation-carpets/parquet-deformation-carpet-5.jpg" alt="Parquet Deformation Carpet 5">
+        </a>
+        <a href="imgs/parquet-deformation-carpets/parquet-deformation-carpet-1.jpg" class="glightbox" data-gallery="parquet-deformation-carpet-gallery">
+          <img src="imgs/parquet-deformation-carpets/parquet-deformation-carpet-1.jpg" alt="Parquet Deformation Carpet 1">
+        </a>
+        <a href="imgs/parquet-deformation-carpets/parquet-deformation-carpet-2.jpg" class="glightbox" data-gallery="parquet-deformation-carpet-gallery">
+          <img src="imgs/parquet-deformation-carpets/parquet-deformation-carpet-2.jpg" alt="Parquet Deformation Carpet 2">
+        </a>
+        <a href="imgs/parquet-deformation-carpets/parquet-deformation-carpet-4.jpg" class="glightbox" data-gallery="parquet-deformation-carpet-gallery">
+          <img src="imgs/parquet-deformation-carpets/parquet-deformation-carpet-4.jpg" alt="Parquet Deformation Carpet 4">
+        </a>
+        <a href="imgs/parquet-deformation-carpets/parquet-deformation-carpet-6.jpg" class="glightbox" data-gallery="parquet-deformation-carpet-gallery">
+          <img src="imgs/parquet-deformation-carpets/parquet-deformation-carpet-6.jpg" alt="Parquet Deformation Carpet 6">
+        </a>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>
+    <script>
+      // Initialize GLightbox with zoom functionality
+      const lightbox = GLightbox({
+          selector: 'a.glightbox',
+          touchNavigation: true,
+          loop: true,
+          zoomable: true, // Enable zooming
+      });
+    </script>
+  </body>
+</html>
