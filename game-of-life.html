@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Personal website of Michael E. Rowan</title>
+    <link rel="stylesheet" href="./css/styles.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+      /* Center the video player in the page */
+      .video-container {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 80vh; /* Adjust height as needed */
+          margin: 20px 0;
+      }
+      video {
+          max-width: 100%;
+          height: auto;
+          border: 2px solid #ccc;
+          box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navigation bar -->
+    <div class="top-navigation-bar">
+      <a href="./index.html"> About </a>
+      <span class="dash"> &mdash;&mdash; </span>
+      <a href="./research.html"> Research </a>
+      <span class="dash"> &mdash;&mdash; </span>
+      <a href="./cv.html"> CV </a>
+      <span class="dash"> &mdash;&mdash; </span>
+      <a href="./misc.html"> Misc. </a>
+      <a> / </a>
+      <a class="active" href="./game-of-life.html"> Game of Life </a>
+    </div>
+
+    <!-- Main content -->
+    <div class="content">
+      <div class="video-container">
+        <video controls autoplay muted loop>
+          <source src="./imgs/game-of-life/game-of-life.mp4" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+      </div>
+    </div>
+  </body>
+</html>

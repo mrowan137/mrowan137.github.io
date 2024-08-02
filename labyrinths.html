@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Personal website of Michael E. Rowan</title>
+    <link rel="stylesheet" href="./css/styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+      #thumbnail-container {
+          display: flex;
+          flex-wrap: wrap; /* Allow thumbnails to wrap into rows */
+          gap: 10px; /* Space between thumbnails */
+          padding-bottom: 10px;
+          margin: 20px 0;
+      }
+      #thumbnail-container img {
+          width: 150px; /* Set thumbnail size */
+          height: auto;
+          cursor: pointer;
+          border: 2px solid #ccc;
+          transition: border-color 0.3s;
+      }
+      #thumbnail-container img:hover {
+          border-color: #000; /* Change border on hover */
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navigation bar -->
+    <div class="top-navigation-bar">
+      <a href="./index.html"> About </a>
+      <span class="dash"> &mdash;&mdash; </span>
+      <a href="./research.html"> Research </a>
+      <span class="dash"> &mdash;&mdash; </span>
+      <a href="./cv.html"> CV </a>
+      <span class="dash"> &mdash;&mdash; </span>
+      <a href="./misc.html"> Misc. </a>
+      <a> / </a>
+      <a class="active" href="./labyrinths.html"> Labyrinths </a>
+    </div>
+
+    <!-- Main content -->
+    <div class="content">
+      <div id="thumbnail-container">
+        <!-- Thumbnails linked to full-size images -->
+        <a href="imgs/labyrinths/labyrinth-1.png" class="glightbox" data-gallery="labyrinth-gallery">
+          <img src="imgs/labyrinths/labyrinth-1.png" alt="Labyrinth 1">
+        </a>
+        <a href="imgs/labyrinths/labyrinth-2.png" class="glightbox" data-gallery="labyrinth-gallery">
+          <img src="imgs/labyrinths/labyrinth-2.png" alt="Labyrinth 2">
+        </a>
+        <a href="imgs/labyrinths/labyrinth-3.png" class="glightbox" data-gallery="labyrinth-gallery">
+          <img src="imgs/labyrinths/labyrinth-3.png" alt="Labyrinth 3">
+        </a>
+        <a href="imgs/labyrinths/labyrinth-4.png" class="glightbox" data-gallery="labyrinth-gallery">
+          <img src="imgs/labyrinths/labyrinth-4.png" alt="Labyrinth 4">
+        </a>
+        <a href="imgs/labyrinths/labyrinth-5.png" class="glightbox" data-gallery="labyrinth-gallery">
+          <img src="imgs/labyrinths/labyrinth-5.png" alt="Labyrinth 5">
+        </a>
+        <a href="imgs/labyrinths/labyrinth-6.png" class="glightbox" data-gallery="labyrinth-gallery">
+          <img src="imgs/labyrinths/labyrinth-6.png" alt="Labyrinth 6">
+        </a>
+        <a href="imgs/labyrinths/labyrinth-7.png" class="glightbox" data-gallery="labyrinth-gallery">
+          <img src="imgs/labyrinths/labyrinth-7.png" alt="Labyrinth 7">
+        </a>
+        <a href="imgs/labyrinths/labyrinth-8.png" class="glightbox" data-gallery="labyrinth-gallery">
+          <img src="imgs/labyrinths/labyrinth-8.png" alt="Labyrinth 8">
+        </a>
+        <a href="imgs/labyrinths/labyrinth-9.png" class="glightbox" data-gallery="labyrinth-gallery">
+          <img src="imgs/labyrinths/labyrinth-9.png" alt="Labyrinth 9">
+        </a>
+        <a href="imgs/labyrinths/labyrinth-10.png" class="glightbox" data-gallery="labyrinth-gallery">
+          <img src="imgs/labyrinths/labyrinth-10.png" alt="Labyrinth 10">
+        </a>
+        <a href="imgs/labyrinths/labyrinth-11.png" class="glightbox" data-gallery="labyrinth-gallery">
+          <img src="imgs/labyrinths/labyrinth-11.png" alt="Labyrinth 11">
+        </a>
+        <a href="imgs/labyrinths/labyrinth-12.png" class="glightbox" data-gallery="labyrinth-gallery">
+          <img src="imgs/labyrinths/labyrinth-12.png" alt="Labyrinth 12">
+        </a>
+        <a href="imgs/labyrinths/labyrinth-13.png" class="glightbox" data-gallery="labyrinth-gallery">
+          <img src="imgs/labyrinths/labyrinth-13.png" alt="Labyrinth 13">
+        </a>
+        <a href="imgs/labyrinths/labyrinth-14.png" class="glightbox" data-gallery="labyrinth-gallery">
+          <img src="imgs/labyrinths/labyrinth-14.png" alt="Labyrinth 14">
+        </a>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>
+    <script>
+      // Initialize GLightbox with zoom functionality
+      const lightbox = GLightbox({
+          selector: 'a.glightbox',
+          touchNavigation: true,
+          loop: true,
+          zoomable: true, // Enable zooming
+      });
+    </script>
+  </body>
+</html>
