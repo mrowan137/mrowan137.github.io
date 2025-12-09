@@ -6,20 +6,44 @@
     <link rel="stylesheet" href="./css/styles.css">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
-      /* Center the video player in the page */
+      canvas {
+        border: 1px solid #ccc;
+        display: block;
+        margin: 20px auto;
+        
+        width: min(512px, 90vw);
+        aspect-ratio: 1/1;
+        height: auto;
+      }
+
+      .controls { text-align: center; margin-bottom: 10px; }
+      .controls .row {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        margin: 6px 0;
+        flex-wrap: wrap;
+      }
+      .controls label { min-width: 140px; text-align: right; }
+      .controls input[type="range"] { width: 220px; }
+      .controls span { width: 48px; display: inline-block; text-align: left; }
+
       .video-container {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          height: 80vh; /* Adjust height as needed */
-          margin: 20px 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: auto;
+        margin: 20px 0;
       }
-      video {
-          max-width: 100%;
-          height: auto;
-          border: 2px solid #ccc;
-          box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      .video-container video {
+        max-width: min(512px, 90vw);
+        border: 1px solid #ccc;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       }
+      #video-container {
+        display: none;
+      }      
     </style>
   </head>
   <body>
@@ -38,12 +62,445 @@
 
     <!-- Main content -->
     <div class="content">
-      <div class="video-container">
-        <video controls autoplay muted loop>
+      <div id="video-container" class="video-container">
+        <video controls autoplay muted loop playsinline
+               poster="./imgs/game-of-life/game-of-life.png">
           <source src="./imgs/game-of-life/game-of-life.mp4" type="video/mp4">
           Your browser does not support the video tag.
         </video>
       </div>
+      <canvas id="canvas" width="512" height="512"></canvas>
+      <div id="controls" class="controls">
+        <div class="row">
+          <label for="density-slider"> initial density fraction: </label>
+          <input type="range" id="density-slider" min="0" max="100" value="10">
+          <span id="density-value"> 0.10 </span>
+        </div>
+        <div class="row">
+          <label for="speed-slider"> steps/s: </label>
+          <input type="range" id="speed-slider" min="1" max="60" value="30">
+          <span id="speed-value"> 30 </span>    
+          <button id="pause-button"> pause </button>
+          <button id="step-button"> step </button>
+        </div>
+      </div>
+      <script>
+        const canvas = document.getElementById("canvas");
+        const controls = document.getElementById("controls");
+        const videoContainer = document.getElementById("video-container");
+        
+        let gl = null;
+        try {
+          gl = canvas.getContext("webgl");
+        } catch (e) {
+          // Fail gracefully
+        }
+        
+        if (!gl) {
+          console.warn("WebGL not supported; displaying MP4 fallback");
+          canvas.style.display = "none";
+          controls.style.display = "none";
+          videoContainer.style.display = "flex";
+        } else {
+          gl.disable(gl.DEPTH_TEST);
+          gl.disable(gl.BLEND);
+
+          let lastDpr = 0;
+          let lastCssW = 0;
+          let lastCssH = 0;
+          function applyHiDPI () {
+            let dpr = window.devicePixelRatio || 1;
+            let cssW = Math.floor(canvas.clientWidth);
+            let cssH = Math.floor(canvas.clientHeight);
+            if (dpr === lastDpr && cssW === lastCssW && cssH === lastCssH) return false;
+            lastDpr = dpr;
+            lastCssW = cssW;
+            lastCssH = cssH;
+
+            let w = Math.max(1, Math.round(cssW*dpr));
+            let h = Math.max(1, Math.round(cssH*dpr));
+            if (canvas.width !== w || canvas.height !== h) {
+              canvas.width = w;
+              canvas.height = h;
+            }
+            return true;
+          }
+
+          // Vertex shader
+          const vshader = `
+            attribute vec2 a_position;
+            attribute vec2 a_tex_coord;
+            varying vec2 v_tex_coord;
+
+            void main () {
+              gl_Position = vec4(a_position, 0.0, 1.0);
+              v_tex_coord = a_tex_coord;
+            }
+          `
+
+          // Fragment shaders
+          const fshader = `
+            precision mediump float;
+            uniform sampler2D u_current_state;
+            uniform vec2 u_inv_resolution;
+
+            varying vec2 v_tex_coord;
+            float sample_state (vec2 offset) {
+              return texture2D(u_current_state, v_tex_coord + offset).r;
+            }
+
+            void main () {
+              float dx = u_inv_resolution.x;
+              float dy = u_inv_resolution.y;
+              float cnt = 0.0;
+
+              for (int y = -1; y <= 1; ++y) {
+                for (int x = -1; x <= 1; ++x) {
+                  if (x != 0 || y != 0) {
+                    vec2 offset = vec2(float(x)*dx, float(y)*dy);
+                    cnt += sample_state(offset);
+                  }
+                }
+              }
+
+              float alive = sample_state(vec2(0.0, 0.0));
+              float next = 0.0;
+
+              if (alive > 0.5) {
+                if      (cnt <  2.0) next = 0.0;  // Was alive, now unalive            (underpop)
+                else if (cnt <= 3.0) next = 1.0;  // Was alive, remain alive              (happy)
+                else if (cnt >  3.0) next = 0.0;  // Was alive, now unalive             (overpop)
+              } else {
+                if (cnt == 3.0) next = 1.0;       // Was unalive, now alive        (reproduction)
+                else            next = 0.0;       // Was unalive, remain unalive   (stay unalive)
+              }
+
+              gl_FragColor = vec4(next, next, next, 1.0);
+            }
+          `
+
+          const fshaderDraw = `
+            precision mediump float;
+            varying vec2 v_tex_coord;
+            uniform sampler2D u_state;
+            void main () {
+              float a = texture2D(u_state, v_tex_coord).r;
+              gl_FragColor = vec4(a, a, a, 1.0);
+            }
+          `
+
+          function compileShader (type, source) {
+            const s = gl.createShader(type);
+            gl.shaderSource(s, source);
+            gl.compileShader(s);
+
+            if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) {
+              const log = gl.getShaderInfoLog(s) || "(no shader log)";
+              gl.deleteShader(s);
+              throw new Error("Shader compile failed:\n" + log);
+            }
+            return s;
+          }
+
+          function linkProgram (vs, fs) {
+            const p = gl.createProgram();
+            gl.attachShader(p, vs);
+            gl.attachShader(p, fs);
+            gl.bindAttribLocation(p, 0, "a_position");
+            gl.bindAttribLocation(p, 1, "a_tex_coord");
+            gl.linkProgram(p);
+            if (!gl.getProgramParameter(p, gl.LINK_STATUS)) {
+              const log = gl.getProgramInfoLog(p) || "(no program log)";
+              gl.deleteProgram(p);
+              throw new Error("Program link failed:\n" + log);            
+            }
+            return p;
+          }
+
+          const vs = compileShader(gl.VERTEX_SHADER, vshader);
+          const fs = compileShader(gl.FRAGMENT_SHADER, fshader);
+          const fsDraw = compileShader(gl.FRAGMENT_SHADER, fshaderDraw);        
+          const program = linkProgram(vs, fs);
+          const programDraw = linkProgram(vs, fsDraw);
+
+          const u_stateLoc = gl.getUniformLocation(programDraw, "u_state");
+          const u_currentStateLoc = gl.getUniformLocation(program, "u_current_state");
+          const u_invResolutionLoc = gl.getUniformLocation(program, "u_inv_resolution");
+
+          gl.useProgram(program);
+          gl.uniform1i(u_currentStateLoc, 0);
+
+          gl.useProgram(programDraw);
+          gl.uniform1i(u_stateLoc, 0);
+
+          gl.deleteShader(vs);
+          gl.deleteShader(fs);
+          gl.deleteShader(fsDraw);
+
+          const vertices = new Float32Array([
+            -1.0, -1.0, 0.0, 0.0,
+             1.0, -1.0, 1.0, 0.0,
+            -1.0,  1.0, 0.0, 1.0,
+
+            -1.0,  1.0, 0.0, 1.0,
+             1.0, -1.0, 1.0, 0.0,
+             1.0,  1.0, 1.0, 1.0
+          ]);
+
+          const vertexBuffer = gl.createBuffer();
+          gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+          gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
+
+          const FSIZE = vertices.BYTES_PER_ELEMENT;
+          const LOC_POS = 0, LOC_UV = 1;
+          gl.vertexAttribPointer(
+            LOC_POS,
+            2,
+            gl.FLOAT,
+            false,
+            4*FSIZE,
+            0
+          );
+          gl.enableVertexAttribArray(LOC_POS);
+          gl.vertexAttribPointer(
+            LOC_UV,
+            2,
+            gl.FLOAT,
+            false,
+            4*FSIZE,
+            2*FSIZE
+          );
+          gl.enableVertexAttribArray(LOC_UV);
+
+          const gridWidth = 512;
+          const gridHeight = 512;
+          const invResolution = new Float32Array([1.0/gridWidth, 1.0/gridHeight]);
+
+          const slider = document.getElementById("density-slider");
+          const densityValueSpan = document.getElementById("density-value");
+
+          function getDensity () {
+            const density = slider.value/100.0;
+            densityValueSpan.textContent = density.toFixed(2);
+            return density;
+          }
+
+          slider.addEventListener("input", () => {getDensity(); restart();});
+
+          function initialize () {
+            const grid = new Uint8Array(gridWidth*gridHeight*4);
+            const aliveDensity = getDensity();  // Read from slider
+            for (let i = 0; i < gridHeight; ++i) {
+              for (let j = 0; j < gridWidth; ++j) {
+                const idx = (i*gridWidth + j)*4;
+                if (Math.random() < aliveDensity) {
+                  grid[idx + 0] = 255;
+                  grid[idx + 1] = 255;
+                  grid[idx + 2] = 255;
+                }
+                grid[idx + 3] = 255;  // All cells opaque
+              }
+            }
+            return grid;
+          }
+
+          function createGoLTexture () {
+            const tex = gl.createTexture();
+            gl.bindTexture(gl.TEXTURE_2D, tex);
+
+            // Try to make the universe into a donut
+            const isPowOfTwo = (n) => n > 0 && (n & (n - 1)) === 0;
+            const useTorus = isPowOfTwo(gridWidth) && isPowOfTwo(gridHeight);
+            const wrapMode = useTorus ? gl.REPEAT : gl.CLAMP_TO_EDGE;
+
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, wrapMode);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, wrapMode);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+
+            gl.texImage2D(
+              gl.TEXTURE_2D,
+              0,
+              gl.RGBA,
+              gridWidth,
+              gridHeight,
+              0,
+              gl.RGBA,
+              gl.UNSIGNED_BYTE,
+              null
+            );
+            gl.bindTexture(gl.TEXTURE_2D, null);
+            return tex;
+          }
+
+          // Two textures for 'ping-pong' state swap
+          const textureA = createGoLTexture();
+          const textureB = createGoLTexture();
+
+          const currentState = {
+            input: textureA,   // Read
+            output: textureB   // Write
+          };
+
+          function createFBOForTexture (tex) {
+            const fb = gl.createFramebuffer();
+            gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
+            gl.framebufferTexture2D(
+              gl.FRAMEBUFFER,
+              gl.COLOR_ATTACHMENT0,
+              gl.TEXTURE_2D,
+              tex,
+              0
+            );
+            if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) !== gl.FRAMEBUFFER_COMPLETE) {
+              console.error("FBO incomplete for texture", tex);
+            }
+            gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+            return fb;
+          }
+
+          // Each texture has dedicated framebuffer
+          // object to avoid detach/reattach every step
+          const fboA = createFBOForTexture(textureA);
+          const fboB = createFBOForTexture(textureB);
+
+          function outputFBO () {
+            return (currentState.output === textureA) ? fboA : fboB;
+          }
+
+          function swap () {
+            const tmp = currentState.input;
+            currentState.input = currentState.output;
+            currentState.output = tmp;
+          }
+
+          function restart () {
+            const initial = initialize();
+            gl.bindTexture(gl.TEXTURE_2D, currentState.input);
+            gl.texImage2D(
+              gl.TEXTURE_2D, 0, gl.RGBA, gridWidth, gridHeight, 0,
+              gl.RGBA, gl.UNSIGNED_BYTE, initial
+            );
+            gl.bindTexture(gl.TEXTURE_2D, null);
+          }
+
+          const speedSlider = document.getElementById("speed-slider");
+          const speedValue  = document.getElementById("speed-value");
+          const pauseBtn    = document.getElementById("pause-button");
+          const stepBtn     = document.getElementById("step-button");
+
+          let stepsPerSec = Number(speedSlider.value);
+          let paused = false;
+          let stepOnce = false;
+
+          function updateSpeedUI () {
+            stepsPerSec = Number(speedSlider.value);
+            speedValue.textContent = String(stepsPerSec);
+          }
+          speedSlider.addEventListener("input", updateSpeedUI);
+          updateSpeedUI();
+
+          function syncPauseUI () {
+            pauseBtn.textContent = paused ? "unpause" : "pause";
+          }
+          pauseBtn.addEventListener("click", () => {
+            paused = !paused;
+            accMs = 0;  // Get rid of backlog
+            syncPauseUI();
+          });
+          stepBtn.addEventListener("click", () => {
+            paused = true;
+            stepOnce = true;
+            syncPauseUI();
+          });
+
+          syncPauseUI();
+
+          function stepSim () {
+            gl.useProgram(program);
+            gl.uniform2fv(u_invResolutionLoc, invResolution);
+
+            gl.activeTexture(gl.TEXTURE0);
+            gl.bindTexture(gl.TEXTURE_2D, currentState.input);
+
+            gl.bindFramebuffer(gl.FRAMEBUFFER, outputFBO());
+            gl.viewport(0, 0, gridWidth, gridHeight);
+            gl.drawArrays(gl.TRIANGLES, 0, 6);
+
+            gl.bindTexture(gl.TEXTURE_2D, null);
+            gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+
+            swap();
+          }
+
+          function render () {
+            gl.useProgram(programDraw);
+            gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+
+            gl.viewport(0, 0, canvas.width, canvas.height);
+            gl.activeTexture(gl.TEXTURE0);
+            gl.bindTexture(gl.TEXTURE_2D, currentState.input);
+
+            gl.drawArrays(gl.TRIANGLES, 0, 6);
+            gl.bindTexture(gl.TEXTURE_2D, null);          
+          }
+
+          let lastT = 0;
+          let accMs = 0;
+          let rafId = 0;
+
+          function frame (t) {
+            applyHiDPI();
+            if (!lastT) lastT = t;
+            let dt = t - lastT;
+            lastT = t;
+            dt = Math.min(dt, 100);
+            if (!paused) accMs += dt;
+            if (stepOnce) {
+              stepSim();
+              stepOnce = false;
+              accMs = 0;
+            } else if (!paused) {
+              const stepMs = 1000/stepsPerSec;
+              while (accMs >= stepMs) {
+                stepSim();
+                accMs -= stepMs;
+              }
+            }
+
+            render();
+
+            rafId = requestAnimationFrame(frame);
+          }
+
+          function cleanup () {
+            if (rafId) cancelAnimationFrame(rafId);
+            gl.useProgram(null);
+            gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+            gl.bindTexture(gl.TEXTURE_2D, null);
+            gl.bindBuffer(gl.ARRAY_BUFFER, null);
+
+            gl.deleteFramebuffer(fboA);
+            gl.deleteFramebuffer(fboB);
+            gl.deleteTexture(textureA);
+            gl.deleteTexture(textureB);
+            gl.deleteBuffer(vertexBuffer);
+            gl.deleteProgram(program);
+            gl.deleteProgram(programDraw);
+          }
+
+          window.addEventListener("pagehide", cleanup, { once: true });
+
+          getDensity();
+          canvas.addEventListener("click", restart);  // Restart on click
+
+          restart();
+
+          applyHiDPI();
+          render();
+          rafId = requestAnimationFrame(frame);
+        }
+      </script>
     </div>
   </body>
 </html>
