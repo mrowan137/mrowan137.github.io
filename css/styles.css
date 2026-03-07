@@ -2,9 +2,9 @@
   Styling
 */
 
-/* setting monospace font globally */
+/* setting serif font globally */
 body {
-    font-family: monospace;
+    font-family: "Times New Roman", Times, serif;
     font-size: 1.0em;
 }
 
@@ -87,7 +87,8 @@ li.acknowledgment::marker {
 .top-navigation-bar span.dash {
     color: black;
     display: inline-block;
-    width: 80px;
+    width: auto;
+    padding: 0 1.5em;
     text-align: center;
 }
 
@@ -102,6 +103,6 @@ li.acknowledgment::marker {
   }
 
   .top-navigation-bar span.dash {
-    width: 60px;
+    padding: 0 1.0em;
   }
 }
